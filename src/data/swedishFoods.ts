@@ -1,0 +1,99 @@
+export interface SwedishFood {
+  name: string;
+  calories: number;
+  protein: number;
+  fiber: number;
+  omega3: number;
+  // Vitaminer
+  vitaminA: number;
+  vitaminC: number;
+  vitaminD: number;
+  vitaminE: number;
+  vitaminK: number;
+  b1: number;
+  b2: number;
+  b3: number;
+  b5: number;
+  b6: number;
+  b7: number;
+  b12: number;
+  folate: number;
+  // Mineraler
+  iron: number;
+  calcium: number;
+  iodine: number;
+  magnesium: number;
+  zinc: number;
+  potassium: number;
+  selenium: number;
+  copper: number;
+  manganese: number;
+  defaultAmount?: number;
+}
+
+export const SWEDISH_FOODS: SwedishFood[] = [
+  { name: "Lax rå", calories: 180, protein: 18.4, fiber: 0, omega3: 2.3, vitaminA: 26, vitaminC: 0, vitaminD: 12.5, vitaminE: 2.0, vitaminK: 0.1, b1: 0.2, b2: 0.1, b3: 7.5, b5: 1.4, b6: 0.8, b7: 5, b12: 3.5, folate: 7, iron: 0.3, calcium: 12, iodine: 30, magnesium: 26, zinc: 0.4, potassium: 380, selenium: 30, copper: 0.05, manganese: 0.02 },
+  { name: "Ägg kokt", calories: 140, protein: 12.4, fiber: 0, omega3: 0.4, vitaminA: 220, vitaminC: 0, vitaminD: 3.7, vitaminE: 1.5, vitaminK: 0.3, b1: 0.06, b2: 0.4, b3: 0.1, b5: 1.3, b6: 0.1, b7: 18, b12: 1.5, folate: 65, iron: 2.0, calcium: 50, iodine: 25, magnesium: 12, zinc: 1.1, potassium: 125, selenium: 25, copper: 0.05, manganese: 0.02, defaultAmount: 55 },
+  { name: "Broccoli", calories: 35, protein: 3.5, fiber: 3.1, omega3: 0.1, vitaminA: 15, vitaminC: 83, vitaminD: 0, vitaminE: 0.7, vitaminK: 101, b1: 0.07, b2: 0.1, b3: 0.6, b5: 0.6, b6: 0.2, b7: 1, b12: 0, folate: 175, iron: 0.7, calcium: 48, iodine: 1, magnesium: 21, zinc: 0.5, potassium: 330, selenium: 1, copper: 0.05, manganese: 0.2 },
+  { name: "Banan", calories: 95, protein: 1.1, fiber: 2.6, omega3: 0.03, vitaminA: 3, vitaminC: 9, vitaminD: 0, vitaminE: 0.1, vitaminK: 0.5, b1: 0.03, b2: 0.07, b3: 0.7, b5: 0.3, b6: 0.4, b7: 0.2, b12: 0, folate: 20, iron: 0.3, calcium: 5, iodine: 0, magnesium: 27, zinc: 0.2, potassium: 358, selenium: 1, copper: 0.08, manganese: 0.3, defaultAmount: 100 },
+  { name: "Satsumas", calories: 45, protein: 0.8, fiber: 1.8, omega3: 0.01, vitaminA: 34, vitaminC: 30, vitaminD: 0, vitaminE: 0.2, vitaminK: 0, b1: 0.06, b2: 0.03, b3: 0.4, b5: 0.2, b6: 0.08, b7: 0.1, b12: 0, folate: 16, iron: 0.1, calcium: 37, iodine: 1, magnesium: 10, zinc: 0.1, potassium: 150, selenium: 0.1, copper: 0.04, manganese: 0.04, defaultAmount: 60 },
+  { name: "Riskakor", calories: 380, protein: 7.0, fiber: 3.5, omega3: 0.1, vitaminA: 0, vitaminC: 0, vitaminD: 0, vitaminE: 0.5, vitaminK: 0, b1: 0.2, b2: 0.05, b3: 4.0, b5: 0.8, b6: 0.3, b7: 3, b12: 0, folate: 15, iron: 1.1, calcium: 10, iodine: 0, magnesium: 110, zinc: 1.5, potassium: 250, selenium: 5, copper: 0.2, manganese: 1.5, defaultAmount: 10 },
+  { name: "Kebabkött (nöt)", calories: 280, protein: 15.0, fiber: 0, omega3: 0.1, vitaminA: 5, vitaminC: 0, vitaminD: 0.3, vitaminE: 0.5, vitaminK: 2.0, b1: 0.1, b2: 0.2, b3: 4.5, b5: 0.5, b6: 0.3, b7: 2, b12: 1.8, folate: 5, iron: 2.2, calcium: 20, iodine: 5, magnesium: 18, zinc: 3.5, potassium: 280, selenium: 12, copper: 0.1, manganese: 0.05 },
+  // --- KOLHYDRATER ---
+  { name: "Potatis (kokt)", calories: 77, protein: 1.8, fiber: 1.4, omega3: 0.01, vitaminA: 0, vitaminC: 11, vitaminD: 0, vitaminE: 0.05, vitaminK: 0.2, b1: 0.1, b2: 0.03, b3: 1.1, b5: 0.3, b6: 0.2, b7: 0.1, b12: 0, folate: 15, iron: 0.6, calcium: 5, iodine: 1, magnesium: 20, zinc: 0.3, potassium: 400, selenium: 0.5, copper: 0.1, manganese: 0.15, defaultAmount: 150 },
+  { name: "Pasta (vete, kokt)", calories: 140, protein: 5.0, fiber: 1.5, omega3: 0.01, vitaminA: 0, vitaminC: 0, vitaminD: 0, vitaminE: 0.1, vitaminK: 0.1, b1: 0.05, b2: 0.02, b3: 0.5, b5: 0.1, b6: 0.03, b7: 0.2, b12: 0, folate: 6, iron: 0.7, calcium: 10, iodine: 1, magnesium: 15, zinc: 0.5, potassium: 35, selenium: 10, copper: 0.1, manganese: 0.3, defaultAmount: 200 },
+  { name: "Ris (basmati, kokt)", calories: 120, protein: 2.5, fiber: 0.5, omega3: 0.01, vitaminA: 0, vitaminC: 0, vitaminD: 0, vitaminE: 0, vitaminK: 0, b1: 0.02, b2: 0.01, b3: 0.4, b5: 0.1, b6: 0.05, b7: 0.1, b12: 0, folate: 2, iron: 0.2, calcium: 3, iodine: 0, magnesium: 12, zinc: 0.4, potassium: 25, selenium: 5, copper: 0.05, manganese: 0.3, defaultAmount: 150 },
+  { name: "Havregryn", calories: 370, protein: 12.9, fiber: 10.1, omega3: 0.1, vitaminA: 0, vitaminC: 0, vitaminD: 0, vitaminE: 1.5, vitaminK: 2.0, b1: 0.6, b2: 0.1, b3: 1.0, b5: 1.1, b6: 0.1, b7: 15, b12: 0, folate: 56, iron: 5.3, calcium: 54, iodine: 1, magnesium: 129, zinc: 3.2, potassium: 350, selenium: 10, copper: 0.4, manganese: 4.5, defaultAmount: 40 },
+
+  // --- PROTEIN (FISK/KÖTT) ---
+  { name: "Torskfilé", calories: 75, protein: 18.0, fiber: 0, omega3: 0.2, vitaminA: 2, vitaminC: 0, vitaminD: 1.0, vitaminE: 0.4, vitaminK: 0, b1: 0.05, b2: 0.05, b3: 2.0, b5: 0.2, b6: 0.2, b7: 1, b12: 1.0, folate: 8, iron: 0.2, calcium: 10, iodine: 150, magnesium: 25, zinc: 0.4, potassium: 350, selenium: 30, copper: 0.03, manganese: 0.01, defaultAmount: 125 },
+  { name: "Fläskfilé", calories: 105, protein: 21.0, fiber: 0, omega3: 0.05, vitaminA: 2, vitaminC: 0, vitaminD: 0.3, vitaminE: 0.1, vitaminK: 0, b1: 0.9, b2: 0.2, b3: 5.0, b5: 0.7, b6: 0.5, b7: 3, b12: 0.6, folate: 4, iron: 1.0, calcium: 6, iodine: 2, magnesium: 25, zinc: 2.2, potassium: 380, selenium: 20, copper: 0.08, manganese: 0.01, defaultAmount: 150 },
+  { name: "Kycklingbröst filé", calories: 105, protein: 23.1, fiber: 0, omega3: 0.03, vitaminA: 6, vitaminC: 0, vitaminD: 0, vitaminE: 0.3, vitaminK: 0, b1: 0.07, b2: 0.1, b3: 11.4, b5: 1.5, b6: 0.6, b7: 1, b12: 0.4, folate: 5, iron: 0.7, calcium: 11, iodine: 4, magnesium: 28, zinc: 1.0, potassium: 330, selenium: 25, copper: 0.04, manganese: 0.02, defaultAmount: 150 },
+  { name: "Nötfärs 10%", calories: 150, protein: 19.3, fiber: 0, omega3: 0.05, vitaminA: 5, vitaminC: 0, vitaminD: 0.1, vitaminE: 0.2, vitaminK: 1.2, b1: 0.05, b2: 0.2, b3: 5.5, b5: 0.6, b6: 0.4, b7: 2, b12: 2.0, folate: 7, iron: 2.4, calcium: 10, iodine: 3, magnesium: 19, zinc: 4.5, potassium: 320, selenium: 15, copper: 0.08, manganese: 0.01, defaultAmount: 125 },
+
+  // --- FRUKT & GRÖNT ---
+  { name: "Äpple", calories: 52, protein: 0.3, fiber: 2.4, omega3: 0.01, vitaminA: 3, vitaminC: 6, vitaminD: 0, vitaminE: 0.2, vitaminK: 2.2, b1: 0.02, b2: 0.03, b3: 0.1, b5: 0.1, b6: 0.04, b7: 0.1, b12: 0, folate: 3, iron: 0.1, calcium: 6, iodine: 0, magnesium: 5, zinc: 0.05, potassium: 110, selenium: 0.1, copper: 0.03, manganese: 0.04, defaultAmount: 120 },
+  { name: "Banan", calories: 95, protein: 1.1, fiber: 2.6, omega3: 0.03, vitaminA: 3, vitaminC: 9, vitaminD: 0, vitaminE: 0.1, vitaminK: 0.5, b1: 0.03, b2: 0.07, b3: 0.7, b5: 0.3, b6: 0.4, b7: 0.2, b12: 0, folate: 20, iron: 0.3, calcium: 5, iodine: 0, magnesium: 27, zinc: 0.2, potassium: 358, selenium: 1, copper: 0.08, manganese: 0.3, defaultAmount: 100 },
+  { name: "Broccoli", calories: 35, protein: 3.5, fiber: 3.1, omega3: 0.1, vitaminA: 15, vitaminC: 83, vitaminD: 0, vitaminE: 0.7, vitaminK: 101, b1: 0.07, b2: 0.1, b3: 0.6, b5: 0.6, b6: 0.2, b7: 1, b12: 0, folate: 175, iron: 0.7, calcium: 48, iodine: 1, magnesium: 21, zinc: 0.5, potassium: 330, selenium: 1, copper: 0.05, manganese: 0.2, defaultAmount: 100 },
+  { name: "Spenat (färsk)", calories: 23, protein: 2.3, fiber: 1.9, omega3: 0.04, vitaminA: 469, vitaminC: 28, vitaminD: 0, vitaminE: 2.0, vitaminK: 483, b1: 0.08, b2: 0.19, b3: 0.7, b5: 0.1, b6: 0.2, b7: 0.1, b12: 0, folate: 194, iron: 2.7, calcium: 99, iodine: 0, magnesium: 79, zinc: 0.5, potassium: 558, selenium: 1, copper: 0.13, manganese: 0.9, defaultAmount: 50 },
+
+  // --- MEJERI ---
+  { name: "Ägg", calories: 140, protein: 12.4, fiber: 0, omega3: 0.4, vitaminA: 220, vitaminC: 0, vitaminD: 3.7, vitaminE: 1.5, vitaminK: 0.3, b1: 0.06, b2: 0.4, b3: 0.1, b5: 1.3, b6: 0.1, b7: 18, b12: 1.5, folate: 65, iron: 2.0, calcium: 50, iodine: 25, magnesium: 12, zinc: 1.1, potassium: 125, selenium: 25, copper: 0.05, manganese: 0.02, defaultAmount: 55 },
+  { name: "Keso", calories: 93, protein: 12.0, fiber: 0, omega3: 0.02, vitaminA: 12, vitaminC: 0, vitaminD: 0, vitaminE: 0.1, vitaminK: 0.2, b1: 0.03, b2: 0.2, b3: 0.1, b5: 0.6, b6: 0.05, b7: 2, b12: 0.5, folate: 12, iron: 0.2, calcium: 70, iodine: 15, magnesium: 12, zinc: 0.4, potassium: 120, selenium: 3, copper: 0.02, manganese: 0.01, defaultAmount: 250 },
+  { name: "Mjölk (1.5%)", calories: 45, protein: 3.5, fiber: 0, omega3: 0.02, vitaminA: 40, vitaminC: 1, vitaminD: 1.0, vitaminE: 0, vitaminK: 0, b1: 0.04, b2: 0.17, b3: 0.1, b5: 0.3, b6: 0.05, b7: 2, b12: 0.6, folate: 5, iron: 0, calcium: 120, iodine: 12, magnesium: 12, zinc: 0.4, potassium: 160, selenium: 1, copper: 0.01, manganese: 0.01, defaultAmount: 200 },
+
+  // --- FLER VANLIGA LIVSMEDEL ---
+  { name: "Avokado", calories: 160, protein: 2.0, fiber: 6.7, omega3: 0.1, vitaminA: 7, vitaminC: 10, vitaminD: 0, vitaminE: 2.1, vitaminK: 21.0, b1: 0.07, b2: 0.13, b3: 1.7, b5: 1.4, b6: 0.3, b7: 5, b12: 0, folate: 81, iron: 0.6, calcium: 12, iodine: 2, magnesium: 29, zinc: 0.6, potassium: 485, selenium: 0.4, copper: 0.19, manganese: 0.14, defaultAmount: 100 },
+  { name: "Kvarg (naturell 0.1%)", calories: 60, protein: 12.0, fiber: 0, omega3: 0.01, vitaminA: 0, vitaminC: 0, vitaminD: 0, vitaminE: 0, vitaminK: 0, b1: 0.03, b2: 0.2, b3: 0.1, b5: 0.5, b6: 0.05, b7: 2, b12: 0.4, folate: 12, iron: 0.1, calcium: 100, iodine: 10, magnesium: 11, zinc: 0.6, potassium: 150, selenium: 2, copper: 0.02, manganese: 0.01, defaultAmount: 250 },
+  { name: "Lax (stekt/ugnsbakad)", calories: 210, protein: 24.0, fiber: 0, omega3: 2.5, vitaminA: 20, vitaminC: 0, vitaminD: 10.0, vitaminE: 3.0, vitaminK: 0.1, b1: 0.2, b2: 0.1, b3: 9.0, b5: 1.6, b6: 0.9, b7: 6, b12: 4.5, folate: 8, iron: 0.4, calcium: 15, iodine: 40, magnesium: 30, zinc: 0.5, potassium: 450, selenium: 35, copper: 0.06, manganese: 0.02, defaultAmount: 125 },
+  { name: "Köttbullar (stekta)", calories: 250, protein: 14.0, fiber: 1.5, omega3: 0.1, vitaminA: 10, vitaminC: 0, vitaminD: 0.2, vitaminE: 0.3, vitaminK: 1.5, b1: 0.1, b2: 0.15, b3: 4.0, b5: 0.5, b6: 0.2, b7: 2, b12: 1.2, folate: 5, iron: 1.5, calcium: 25, iodine: 5, magnesium: 18, zinc: 2.5, potassium: 300, selenium: 10, copper: 0.1, manganese: 0.05, defaultAmount: 100 },
+  { name: "Grekisk Yoghurt (10%)", calories: 130, protein: 4.0, fiber: 0, omega3: 0.1, vitaminA: 100, vitaminC: 1, vitaminD: 0.1, vitaminE: 0.1, vitaminK: 0, b1: 0.04, b2: 0.15, b3: 0.1, b5: 0.4, b6: 0.05, b7: 3, b12: 0.4, folate: 6, iron: 0.1, calcium: 110, iodine: 15, magnesium: 12, zinc: 0.5, potassium: 160, selenium: 2, copper: 0.01, manganese: 0.01, defaultAmount: 200 },
+  { name: "Mandel", calories: 600, protein: 21.0, fiber: 12.0, omega3: 0.01, vitaminA: 1, vitaminC: 0, vitaminD: 0, vitaminE: 26.0, vitaminK: 0, b1: 0.2, b2: 1.1, b3: 3.5, b5: 0.5, b6: 0.1, b7: 60, b12: 0, folate: 50, iron: 3.7, calcium: 264, iodine: 1, magnesium: 270, zinc: 3.1, potassium: 700, selenium: 3, copper: 1.0, manganese: 2.2, defaultAmount: 30 },
+  { name: "Blåbär", calories: 55, protein: 0.7, fiber: 2.4, omega3: 0.1, vitaminA: 3, vitaminC: 10, vitaminD: 0, vitaminE: 0.6, vitaminK: 19.0, b1: 0.04, b2: 0.04, b3: 0.4, b5: 0.1, b6: 0.05, b7: 0.1, b12: 0, folate: 6, iron: 0.3, calcium: 6, iodine: 1, magnesium: 6, zinc: 0.1, potassium: 80, selenium: 0.1, copper: 0.06, manganese: 0.3, defaultAmount: 100 },
+  { name: "Bacon (stekt)", calories: 450, protein: 30.0, fiber: 0, omega3: 0.2, vitaminA: 0, vitaminC: 0, vitaminD: 0.5, vitaminE: 0.2, vitaminK: 0, b1: 0.4, b2: 0.3, b3: 9.0, b5: 1.0, b6: 0.4, b7: 4, b12: 1.5, folate: 2, iron: 1.2, calcium: 10, iodine: 5, magnesium: 25, zinc: 3.5, potassium: 500, selenium: 50, copper: 0.1, manganese: 0.02, defaultAmount: 50 },
+  { name: "Gurka", calories: 15, protein: 0.7, fiber: 0.6, omega3: 0.01, vitaminA: 5, vitaminC: 3, vitaminD: 0, vitaminE: 0.1, vitaminK: 16.0, b1: 0.03, b2: 0.03, b3: 0.1, b5: 0.2, b6: 0.04, b7: 0.1, b12: 0, folate: 7, iron: 0.3, calcium: 16, iodine: 1, magnesium: 13, zinc: 0.2, potassium: 140, selenium: 0.3, copper: 0.04, manganese: 0.08, defaultAmount: 50 },
+  { name: "Tomat", calories: 20, protein: 0.9, fiber: 1.2, omega3: 0.01, vitaminA: 42, vitaminC: 14, vitaminD: 0, vitaminE: 0.5, vitaminK: 8.0, b1: 0.04, b2: 0.02, b3: 0.6, b5: 0.1, b6: 0.08, b7: 0.1, b12: 0, folate: 15, iron: 0.3, calcium: 10, iodine: 1, magnesium: 11, zinc: 0.2, potassium: 240, selenium: 0.1, copper: 0.06, manganese: 0.11, defaultAmount: 80 },
+  { name: "Tonfisk (konserv i vatten)", calories: 110, protein: 25.0, fiber: 0, omega3: 0.1, vitaminA: 20, vitaminC: 0, vitaminD: 2.0, vitaminE: 0.5, vitaminK: 0, b1: 0.04, b2: 0.1, b3: 13.0, b5: 0.3, b6: 0.4, b7: 1, b12: 3.0, folate: 5, iron: 1.2, calcium: 10, iodine: 30, magnesium: 30, zinc: 0.8, potassium: 300, selenium: 70, copper: 0.05, manganese: 0.02, defaultAmount: 120 },
+  { name: "Rågbröd (grovt)", calories: 250, protein: 9.0, fiber: 12.0, omega3: 0.2, vitaminA: 0, vitaminC: 0, vitaminD: 0, vitaminE: 0.5, vitaminK: 1.0, b1: 0.2, b2: 0.1, b3: 2.5, b5: 0.5, b6: 0.2, b7: 5, b12: 0, folate: 45, iron: 3.5, calcium: 40, iodine: 5, magnesium: 80, zinc: 2.5, potassium: 350, selenium: 15, copper: 0.3, manganese: 2.5, defaultAmount: 40 },
+  { name: "Ost (Hushållsost 26%)", calories: 330, protein: 25.0, fiber: 0, omega3: 0.2, vitaminA: 250, vitaminC: 0, vitaminD: 0.3, vitaminE: 0.2, vitaminK: 2.0, b1: 0.03, b2: 0.35, b3: 0.1, b5: 0.4, b6: 0.05, b7: 3, b12: 1.5, folate: 20, iron: 0.2, calcium: 750, iodine: 30, magnesium: 30, zinc: 3.5, potassium: 100, selenium: 15, copper: 0.02, manganese: 0.01, defaultAmount: 20 },
+  { name: "Smör", calories: 740, protein: 0.6, fiber: 0, omega3: 0.5, vitaminA: 700, vitaminC: 0, vitaminD: 0.7, vitaminE: 2.0, vitaminK: 7.0, b1: 0, b2: 0.02, b3: 0, b5: 0.1, b6: 0, b7: 1, b12: 0.1, folate: 3, iron: 0, calcium: 15, iodine: 2, magnesium: 2, zinc: 0.1, potassium: 20, selenium: 1, copper: 0.01, manganese: 0, defaultAmount: 10 },
+  { name: "Paprika (röd)", calories: 30, protein: 1.0, fiber: 2.1, omega3: 0.03, vitaminA: 150, vitaminC: 120, vitaminD: 0, vitaminE: 1.6, vitaminK: 4.9, b1: 0.05, b2: 0.08, b3: 1.0, b5: 0.3, b6: 0.3, b7: 1, b12: 0, folate: 45, iron: 0.4, calcium: 10, iodine: 1, magnesium: 12, zinc: 0.2, potassium: 210, selenium: 0.1, copper: 0.02, manganese: 0.1, defaultAmount: 50 },
+  { name: "Jordnötssmör", calories: 600, protein: 25.0, fiber: 8.0, omega3: 0, vitaminA: 0, vitaminC: 0, vitaminD: 0, vitaminE: 9.0, vitaminK: 0.6, b1: 0.1, b2: 0.1, b3: 13.0, b5: 1.1, b6: 0.5, b7: 10, b12: 0, folate: 74, iron: 1.9, calcium: 43, iodine: 0, magnesium: 154, zinc: 2.9, potassium: 650, selenium: 5, copper: 0.5, manganese: 1.5, defaultAmount: 20 },
+  { name: "Sötpotatis", calories: 86, protein: 1.6, fiber: 3.0, omega3: 0.01, vitaminA: 700, vitaminC: 2, vitaminD: 0, vitaminE: 0.2, vitaminK: 1.8, b1: 0.1, b2: 0.1, b3: 0.6, b5: 0.8, b6: 0.2, b7: 4, b12: 0, folate: 11, iron: 0.6, calcium: 30, iodine: 1, magnesium: 25, zinc: 0.3, potassium: 337, selenium: 0.6, copper: 0.15, manganese: 0.3, defaultAmount: 150 },
+  { name: "Valnötter", calories: 650, protein: 15.0, fiber: 7.0, omega3: 9.0, vitaminA: 2, vitaminC: 1, vitaminD: 0, vitaminE: 0.7, vitaminK: 2.7, b1: 0.3, b2: 0.1, b3: 1.1, b5: 0.6, b6: 0.5, b7: 20, b12: 0, folate: 98, iron: 2.9, calcium: 98, iodine: 2, magnesium: 158, zinc: 3.1, potassium: 440, selenium: 5, copper: 1.6, manganese: 3.4, defaultAmount: 30 },
+  { name: "Bönor (svarta, kokta)", calories: 130, protein: 9.0, fiber: 8.5, omega3: 0.1, vitaminA: 0, vitaminC: 0, vitaminD: 0, vitaminE: 0.3, vitaminK: 3.0, b1: 0.2, b2: 0.06, b3: 0.5, b5: 0.2, b6: 0.1, b7: 2, b12: 0, folate: 149, iron: 2.1, calcium: 27, iodine: 1, magnesium: 70, zinc: 1.1, potassium: 350, selenium: 1, copper: 0.2, manganese: 0.4, defaultAmount: 100 },
+  { name: "Gröt (Havre, vatten)", calories: 50, protein: 1.5, fiber: 1.2, omega3: 0.02, vitaminA: 0, vitaminC: 0, vitaminD: 0, vitaminE: 0.2, vitaminK: 0.3, b1: 0.08, b2: 0.02, b3: 0.1, b5: 0.1, b6: 0.02, b7: 2, b12: 0, folate: 7, iron: 0.7, calcium: 7, iodine: 0, magnesium: 16, zinc: 0.4, potassium: 45, selenium: 1, copper: 0.05, manganese: 0.6, defaultAmount: 250 },
+
+  // --- FRUKT OCH GRÖNT ---
+  { name: "Päron", calories: 57, protein: 0.4, fiber: 3.1, omega3: 0.01, vitaminA: 1, vitaminC: 4, vitaminD: 0, vitaminE: 0.1, vitaminK: 4.4, b1: 0.01, b2: 0.03, b3: 0.2, b5: 0.1, b6: 0.03, b7: 0.1, b12: 0, folate: 7, iron: 0.2, calcium: 9, iodine: 0, magnesium: 7, zinc: 0.1, potassium: 116, selenium: 0.1, copper: 0.08, manganese: 0.05, defaultAmount: 150 },
+  { name: "Apelsin", calories: 47, protein: 0.9, fiber: 2.4, omega3: 0.01, vitaminA: 11, vitaminC: 53, vitaminD: 0, vitaminE: 0.2, vitaminK: 0, b1: 0.09, b2: 0.04, b3: 0.3, b5: 0.3, b6: 0.06, b7: 0.1, b12: 0, folate: 30, iron: 0.1, calcium: 40, iodine: 1, magnesium: 10, zinc: 0.1, potassium: 181, selenium: 0.5, copper: 0.05, manganese: 0.03, defaultAmount: 150 },
+  { name: "Vindruvor", calories: 69, protein: 0.7, fiber: 0.9, omega3: 0.01, vitaminA: 3, vitaminC: 3, vitaminD: 0, vitaminE: 0.2, vitaminK: 14.6, b1: 0.07, b2: 0.07, b3: 0.2, b5: 0.1, b6: 0.09, b7: 0.1, b12: 0, folate: 2, iron: 0.4, calcium: 10, iodine: 0, magnesium: 7, zinc: 0.1, potassium: 191, selenium: 0.1, copper: 0.13, manganese: 0.07, defaultAmount: 100 },
+  { name: "Jordgubbar", calories: 33, protein: 0.7, fiber: 2.0, omega3: 0.07, vitaminA: 1, vitaminC: 59, vitaminD: 0, vitaminE: 0.3, vitaminK: 2.2, b1: 0.02, b2: 0.02, b3: 0.4, b5: 0.1, b6: 0.05, b7: 0.1, b12: 0, folate: 24, iron: 0.4, calcium: 16, iodine: 1, magnesium: 13, zinc: 0.1, potassium: 153, selenium: 0.4, copper: 0.05, manganese: 0.39, defaultAmount: 100 },
+  { name: "Kiwi", calories: 61, protein: 1.1, fiber: 3.0, omega3: 0.04, vitaminA: 4, vitaminC: 93, vitaminD: 0, vitaminE: 1.5, vitaminK: 40.3, b1: 0.03, b2: 0.03, b3: 0.3, b5: 0.2, b6: 0.06, b7: 0.1, b12: 0, folate: 25, iron: 0.3, calcium: 34, iodine: 1, magnesium: 17, zinc: 0.1, potassium: 312, selenium: 0.2, copper: 0.13, manganese: 0.1, defaultAmount: 70 },
+  { name: "Mango", calories: 60, protein: 0.8, fiber: 1.6, omega3: 0.04, vitaminA: 54, vitaminC: 36, vitaminD: 0, vitaminE: 0.9, vitaminK: 4.2, b1: 0.03, b2: 0.04, b3: 0.7, b5: 0.2, b6: 0.1, b7: 0.1, b12: 0, folate: 43, iron: 0.2, calcium: 11, iodine: 1, magnesium: 10, zinc: 0.1, potassium: 168, selenium: 0.6, copper: 0.11, manganese: 0.06, defaultAmount: 150 },
+  { name: "Melon (vatten-)", calories: 30, protein: 0.6, fiber: 0.4, omega3: 0.01, vitaminA: 28, vitaminC: 8, vitaminD: 0, vitaminE: 0.1, vitaminK: 0.1, b1: 0.03, b2: 0.02, b3: 0.2, b5: 0.2, b6: 0.05, b7: 0.1, b12: 0, folate: 3, iron: 0.2, calcium: 7, iodine: 0, magnesium: 10, zinc: 0.1, potassium: 112, selenium: 0.4, copper: 0.04, manganese: 0.04, defaultAmount: 200 },
+  { name: "Grapefrukt", calories: 42, protein: 0.8, fiber: 1.6, omega3: 0.01, vitaminA: 58, vitaminC: 31, vitaminD: 0, vitaminE: 0.1, vitaminK: 0, b1: 0.04, b2: 0.03, b3: 0.2, b5: 0.3, b6: 0.05, b7: 0.1, b12: 0, folate: 13, iron: 0.1, calcium: 22, iodine: 1, magnesium: 9, zinc: 0.1, potassium: 135, selenium: 0.1, copper: 0.03, manganese: 0.02, defaultAmount: 200 },
+  { name: "Ananas", calories: 50, protein: 0.5, fiber: 1.4, omega3: 0.01, vitaminA: 3, vitaminC: 48, vitaminD: 0, vitaminE: 0, vitaminK: 0.7, b1: 0.08, b2: 0.03, b3: 0.5, b5: 0.2, b6: 0.1, b7: 0.1, b12: 0, folate: 18, iron: 0.3, calcium: 13, iodine: 1, magnesium: 12, zinc: 0.1, potassium: 109, selenium: 0.1, copper: 0.11, manganese: 0.9, defaultAmount: 150 },
+  { name: "Persika", calories: 39, protein: 0.9, fiber: 1.5, omega3: 0.01, vitaminA: 16, vitaminC: 7, vitaminD: 0, vitaminE: 0.7, vitaminK: 2.6, b1: 0.02, b2: 0.03, b3: 0.8, b5: 0.2, b6: 0.03, b7: 0.1, b12: 0, folate: 4, iron: 0.3, calcium: 6, iodine: 0, magnesium: 9, zinc: 0.2, potassium: 190, selenium: 0.1, copper: 0.07, manganese: 0.06, defaultAmount: 120 },
+
+];

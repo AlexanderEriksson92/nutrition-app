@@ -1,209 +1,396 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap');
 :root {
-  --bg: #050505;
+  --bg: #030303;
+  --bg-gradient: radial-gradient(circle at 50% -20%, #1a1a1a 0%, #030303 80%);
   --card: #0d0d0d;
   --accent: #00ff88;
   --blue: #00d2ff;
   --text: #ffffff;
   --text-dim: #888;
-  --border: #1a1a1a;
+  --border: rgba(255, 255, 255, 0.08); /* Mjukare border */
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --font-main: 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
 }
 
 body {
-  background-color: var(--bg);
+  background: var(--bg-gradient);
+  background-attachment: fixed; /* Gör att gradienten inte rör sig vid scroll */
   color: var(--text);
   font-family: 'Plus Jakarta Sans', sans-serif;
   margin: 0;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* --- FLIK-MENY --- */
+.tab-menu {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+  padding: 5px 0; /* Ger lite andrum */
+  overflow-x: auto; /* Scrolla på mobilen om det blir för många flikar */
+}
+
+.tab-menu button {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  padding: 10px 20px;
+  border-radius: 40px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.tab-menu button.active {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+/* --- HISTORIK-LISTA --- */
+.history-box {
+  background: var(--card);
+  padding: 30px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 10px; /* Padding för att scrollbar inte ska täcka text */
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: border 0.3s ease;
+}
+
+.history-item:hover {
+  border-color: var(--border);
+}
+
+/* --- SÖKRESULTAT DROPDOWN --- */
+.results-dropdown {
+  background: #111;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  margin-top: 15px;
+  padding: 10px; /* Padding inuti dropdownen */
+  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* --- SÖKRESULTAT RAD --- */
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  margin-bottom: 4px;
+}
+
+.result-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(0, 255, 136, 0.2);
+}
+
+.res-text {
+  flex: 1; /* Tar upp allt ledigt utrymme till vänster */
+  cursor: pointer;
+}
+
+.product-name {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+/* --- KONTROLLER (Input + Plus) --- */
+.amount-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Mellanrum mellan talet och plusset */
+}
+
+.amount-input {
+  width: 60px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: white;
+  padding: 8px;
+  text-align: center;
+  font-family: inherit;
+  font-weight: 600;
+  outline: none;
+}
+
+.amount-input:focus {
+  border-color: var(--blue);
+}
+
+/* --- DET GRÖNA PLUSSET --- */
+.add-icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  font-size: 1.5rem;
+  font-weight: 400; /* Tunna plusser ser ofta mer moderna ut */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 0;
+  line-height: 0;
+}
+
+.add-icon-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+}
+
+.add-icon-btn:active {
+  transform: scale(0.95);
 }
 
 .app-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 20px 100px;
+  width: 100%;
+  max-width: 1100px; /* Begränsar bredden för att hålla det samlat */
+  padding: 0 40px 100px;
+  display: flex;
+  flex-direction: column;
 }
 
-/* --- NAVBAR --- */
+/* --- NAVBAR (Centrerad i toppen) --- */
 .navbar-simple {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 40px 0;
+  padding: 50px 0;
 }
 
-.logo { font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; }
-.logo span { color: var(--accent); }
-
-.profile-selector {
-  display: flex;
-  background: var(--card);
-  padding: 4px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
+.logo { 
+  font-weight: 800; 
+  font-size: 1.5rem; 
+  letter-spacing: -1px; 
 }
 
-.profile-selector button {
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.3s;
+/* --- DASHBOARD LAYOUT --- */
+.dash-header { 
+  margin-bottom: 50px; 
+  text-align: left; /* Eller center om du föredrar det helt symmetriskt */
 }
 
-.profile-selector button.active {
-  background: var(--border);
-  color: var(--text);
+.dash-header h1 { font-size: 3.2rem; margin: 0; letter-spacing: -2px; }
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px; /* Fast bredd på högerkolumnen ser proffsigare ut */
+  gap: 40px;
+  align-items: start;
 }
 
-/* --- DASHBOARD --- */
-.dash-header { margin-bottom: 40px; }
-.dash-header h1 { font-size: 2.5rem; margin-bottom: 8px; }
-.dash-header p { color: var(--text-dim); }
-
+/* --- VÄNSTER KOLUMN (Stats) --- */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 16px;
+  width: 100%;
 }
 
 .stat-card {
   background: var(--card);
-  padding: 20px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-}
-
-.stat-label-row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  font-size: 0.9rem;
-}
-
-.nutrient-name { font-weight: 600; }
-.nutrient-value { color: var(--text-dim); }
-
-.progress-container {
-  height: 6px;
-  background: #1a1a1a;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* --- COACH BOX --- */
-.coach-box {
-  background: linear-gradient(145deg, #0d0d0d, #141414);
   padding: 30px;
-  border-radius: 24px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border);
-  margin-bottom: 40px;
-}
-
-.coach-box h2 { font-size: 1.2rem; margin-bottom: 20px; }
-
-.tips-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-}
-
-.tip-item {
-  background: rgba(255, 255, 255, 0.03);
-  padding: 15px;
-  border-radius: 12px;
-  border-left: 3px solid var(--accent);
-}
-
-.tip-item p { margin-bottom: 5px; font-size: 0.95rem; }
-.tip-item small { color: var(--accent); opacity: 0.8; }
-
-/* --- SEARCH AREA --- */
-.search-area {
-  position: relative; /* Viktigt för dropdown */
-  max-width: 500px;
-  margin: 0 auto;
-}
-
-.search-wrapper {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.nutrient-name { 
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.nutrient-value { 
+  font-size: 1.4rem; 
+  font-weight: 700;
+  margin: 10px 0 20px;
+}
+
+/* --- HÖGER KOLUMN (Controls) --- */
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: sticky;
+  top: 40px;
+}
+
+.search-area, .coach-box {
+  background: var(--card);
+  padding: 30px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+/* --- SÖK & KNAPPAR --- */
+/* Styling för input så den poppar mer */
+.search-wrapper {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  padding: 8px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  transition: border-color 0.3s ease;
+}
+
+.search-wrapper:focus-within {
+  border-color: var(--blue);
+}
+
+/* Scrollbar styling (för history-list) */
+.history-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+/* Göm knappen om den inte behövs (vi kör ju live-sök nu) */
+.search-btn {
+  display: none; /* Kan tas bort helt i JSX sen */
 }
 
 .search-area input {
-  flex: 1;
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 14px 20px;
-  border-radius: 14px;
+  background: transparent;
+  border: none;
+  padding: 12px 15px;
   color: white;
-  font-size: 1rem;
+  flex: 1;
   outline: none;
 }
-
-.search-area input:focus { border-color: var(--blue); }
 
 .search-btn {
   background: var(--text);
   color: var(--bg);
   border: none;
-  padding: 0 24px;
-  border-radius: 14px;
-  font-weight: 700;
+  padding: 10px 25px;
+  border-radius: 15px;
+  font-weight: 800;
   cursor: pointer;
 }
 
-/* --- RESULTS DROPDOWN --- */
+/* --- DROPDOWN (Centrerad i förhållande till sök) --- */
 .results-dropdown {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 0;
-  right: 0;
-  background: #141414;
+  background: #111;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: var(--radius-md);
+  margin-top: 15px;
   overflow: hidden;
-  z-index: 100;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
-.result-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  gap: 15px;
-  cursor: pointer;
-  transition: 0.2s;
+/* --- PROGRESS BAR (Smidigare) --- */
+.progress-container {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  width: 100%;
+  margin-top: 8px;
+  overflow: hidden; 
 }
 
-.result-item:hover { background: #1a1a1a; }
-
-.result-item img {
-  width: 45px;
-  height: 45px;
-  object-fit: cover;
-  border-radius: 8px;
-  background: #222;
+.progress-bar {
+  height: 100%; 
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 2px; 
 }
 
-.res-text { flex: 1; }
-.product-name { margin: 0; font-size: 0.95rem; font-weight: 600; }
-.res-text small { color: var(--text-dim); }
+.results-dropdown {
+  animation: slideDown 0.2s ease-out;
+}
 
-.add-icon {
-  font-size: 1.5rem;
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.nutrient-info-card {
+  background: var(--card);
+  padding: 30px;
+  border-radius: 20px;
+  margin-top: 20px;
+  line-height: 1.6;
+}
+
+.sources-box {
+  background: rgba(0, 210, 255, 0.1);
+  padding: 15px;
+  border-left: 4px solid var(--accent);
+  margin-top: 20px;
+}
+
+/* Styling för näringssidan */
+.nutrient-info-card h3 {
   color: var(--accent);
-  font-weight: 300;
+  margin-bottom: 10px;
+  font-size: 1.4rem;
 }
 
-@media (max-width: 600px) {
-  .stats-grid { grid-template-columns: 1fr; }
-  .navbar-simple { flex-direction: column; gap: 20px; }
-  .dash-header h1 { font-size: 2rem; }
+.nutrient-info-card section {
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 20px;
+}
+
+.sources-box h4 {
+  margin-bottom: 8px;
+  color: #00d2ff;
+}
+
+.sources-box p {
+  font-style: italic;
+  color: #eee;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 1000px) {
+  .main-layout { grid-template-columns: 1fr; }
+  .app-container { padding: 0 20px 50px; }
+  .stats-grid { grid-template-columns: 1fr !important; }
 }
