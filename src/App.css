@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800;900&display=swap');
+
 :root {
   --bg: #030303;
   --bg-gradient: radial-gradient(circle at 50% -20%, #1a1a1a 0%, #030303 80%);
@@ -7,7 +8,7 @@
   --blue: #00d2ff;
   --text: #ffffff;
   --text-dim: #888;
-  --border: rgba(255, 255, 255, 0.08); /* Mjukare border */
+  --border: rgba(255, 255, 255, 0.08);
   --radius-lg: 28px;
   --radius-md: 18px;
   --font-main: 'Inter', sans-serif;
@@ -16,180 +17,23 @@
 
 body {
   background: var(--bg-gradient);
-  background-attachment: fixed; /* Gör att gradienten inte rör sig vid scroll */
+  background-attachment: fixed;
   color: var(--text);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Inter', sans-serif; /* Ändrade till Inter för att matcha importen */
   margin: 0;
   display: flex;
   justify-content: center;
   min-height: 100vh;
 }
 
-/* --- FLIK-MENY --- */
-.tab-menu {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 25px;
-  padding: 5px 0; /* Ger lite andrum */
-  overflow-x: auto; /* Scrolla på mobilen om det blir för många flikar */
-}
-
-.tab-menu button {
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  padding: 10px 20px;
-  border-radius: 40px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.tab-menu button.active {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-  box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
-}
-
-/* --- HISTORIK-LISTA --- */
-.history-box {
-  background: var(--card);
-  padding: 30px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-}
-
-.history-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 20px 0;
-  max-height: 300px;
-  overflow-y: auto;
-  padding-right: 10px; /* Padding för att scrollbar inte ska täcka text */
-}
-
-.history-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  transition: border 0.3s ease;
-}
-
-.history-item:hover {
-  border-color: var(--border);
-}
-
-/* --- SÖKRESULTAT DROPDOWN --- */
-.results-dropdown {
-  background: #111;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  margin-top: 15px;
-  padding: 10px; /* Padding inuti dropdownen */
-  box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* --- SÖKRESULTAT RAD --- */
-.result-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 16px;
-  border: 1px solid transparent;
-  transition: all 0.2s ease;
-  margin-bottom: 4px;
-}
-
-.result-item:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(0, 255, 136, 0.2);
-}
-
-.res-text {
-  flex: 1; /* Tar upp allt ledigt utrymme till vänster */
-  cursor: pointer;
-}
-
-.product-name {
-  margin: 0;
-  font-weight: 600;
-  font-size: 1rem;
-  color: var(--text);
-}
-
-/* --- KONTROLLER (Input + Plus) --- */
-.amount-controls {
-  display: flex;
-  align-items: center;
-  gap: 12px; /* Mellanrum mellan talet och plusset */
-}
-
-.amount-input {
-  width: 60px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: white;
-  padding: 8px;
-  text-align: center;
-  font-family: inherit;
-  font-weight: 600;
-  outline: none;
-}
-
-.amount-input:focus {
-  border-color: var(--blue);
-}
-
-/* --- DET GRÖNA PLUSSET --- */
-.add-icon-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #000;
-  border: none;
-  font-size: 1.5rem;
-  font-weight: 400; /* Tunna plusser ser ofta mer moderna ut */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  padding: 0;
-  line-height: 0;
-}
-
-.add-icon-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
-}
-
-.add-icon-btn:active {
-  transform: scale(0.95);
-}
-
 .app-container {
   width: 100%;
-  max-width: 1100px; /* Begränsar bredden för att hålla det samlat */
+  max-width: 1100px;
   padding: 0 40px 100px;
   display: flex;
   flex-direction: column;
 }
 
-/* --- NAVBAR (Centrerad i toppen) --- */
 .navbar-simple {
   display: flex;
   justify-content: space-between;
@@ -198,199 +42,17 @@ body {
 }
 
 .logo { 
+  font-family: var(--font-display);
   font-weight: 800; 
   font-size: 1.5rem; 
   letter-spacing: -1px; 
 }
 
-/* --- DASHBOARD LAYOUT --- */
-.dash-header { 
-  margin-bottom: 50px; 
-  text-align: left; /* Eller center om du föredrar det helt symmetriskt */
-}
-
-.dash-header h1 { font-size: 3.2rem; margin: 0; letter-spacing: -2px; }
-
-.main-layout {
-  display: grid;
-  grid-template-columns: 1fr 380px; /* Fast bredd på högerkolumnen ser proffsigare ut */
-  gap: 40px;
-  align-items: start;
-}
-
-/* --- VÄNSTER KOLUMN (Stats) --- */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 16px;
-  width: 100%;
-}
-
-.stat-card {
-  background: var(--card);
-  padding: 30px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.nutrient-name { 
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
-
-.nutrient-value { 
-  font-size: 1.4rem; 
-  font-weight: 700;
-  margin: 10px 0 20px;
-}
-
-/* --- HÖGER KOLUMN (Controls) --- */
-.right-column {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  position: sticky;
-  top: 40px;
-}
-
-.search-area, .coach-box {
-  background: var(--card);
-  padding: 30px;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border);
-}
-
-/* --- SÖK & KNAPPAR --- */
-/* Styling för input så den poppar mer */
-.search-wrapper {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  padding: 8px;
-  border-radius: 22px;
-  border: 1px solid var(--border);
-  transition: border-color 0.3s ease;
-}
-
-.search-wrapper:focus-within {
-  border-color: var(--blue);
-}
-
-/* Scrollbar styling (för history-list) */
-.history-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.history-list::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 10px;
-}
-
-/* Göm knappen om den inte behövs (vi kör ju live-sök nu) */
-.search-btn {
-  display: none; /* Kan tas bort helt i JSX sen */
-}
-
-.search-area input {
-  background: transparent;
-  border: none;
-  padding: 12px 15px;
-  color: white;
-  flex: 1;
-  outline: none;
-}
-
-.search-btn {
-  background: var(--text);
-  color: var(--bg);
-  border: none;
-  padding: 10px 25px;
-  border-radius: 15px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-/* --- DROPDOWN (Centrerad i förhållande till sök) --- */
-.results-dropdown {
-  background: #111;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  margin-top: 15px;
-  overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-}
-
-/* --- PROGRESS BAR (Smidigare) --- */
-.progress-container {
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  width: 100%;
-  margin-top: 8px;
-  overflow: hidden; 
-}
-
-.progress-bar {
-  height: 100%; 
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 2px; 
-}
-
-.results-dropdown {
-  animation: slideDown 0.2s ease-out;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.nutrient-info-card {
-  background: var(--card);
-  padding: 30px;
-  border-radius: 20px;
-  margin-top: 20px;
-  line-height: 1.6;
-}
-
-.sources-box {
-  background: rgba(0, 210, 255, 0.1);
-  padding: 15px;
-  border-left: 4px solid var(--accent);
-  margin-top: 20px;
-}
-
-/* Styling för näringssidan */
-.nutrient-info-card h3 {
+.logo span {
   color: var(--accent);
-  margin-bottom: 10px;
-  font-size: 1.4rem;
-}
-
-.nutrient-info-card section {
-  margin-bottom: 30px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  padding-bottom: 20px;
-}
-
-.sources-box h4 {
-  margin-bottom: 8px;
-  color: #00d2ff;
-}
-
-.sources-box p {
-  font-style: italic;
-  color: #eee;
 }
 
 /* --- RESPONSIVE --- */
 @media (max-width: 1000px) {
-  .main-layout { grid-template-columns: 1fr; }
   .app-container { padding: 0 20px 50px; }
-  .stats-grid { grid-template-columns: 1fr !important; }
 }

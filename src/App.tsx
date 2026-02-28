@@ -8,8 +8,13 @@ import NutrientDetail from './NutrientDetail'; // Importera
 
 
 export default function App() {
+  const [filters, setFilters] = useState({
+    vego: false,
+    laktosfritt: false,
+    glutenfritt: false
+  });
   const [profile, setProfile] = useState<'male' | 'female'>('female');
-  
+
   // 1. Skapa state för intag (mätarna)
   const [intake, setIntake] = useState(() => {
     const saved = localStorage.getItem('nutrition_intake');
@@ -34,13 +39,15 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={
-        <Dashboard 
-          profile={profile} 
-          setProfile={setProfile} 
-          intake={intake} 
+        <Dashboard
+          profile={profile}
+          setProfile={setProfile}
+          filters={filters}
+          setFilters={setFilters}
+          intake={intake}
           setIntake={setIntake}
-          history={history}      
-          setHistory={setHistory} 
+          history={history}
+          setHistory={setHistory}
         />
       } />
       <Route path="/product/:id" element={<ProductDetail />} />

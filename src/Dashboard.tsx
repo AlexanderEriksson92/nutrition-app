@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RDI_DATA, type Nutrient } from './data/rdi';
 import { SWEDISH_FOODS, type SwedishFood } from './data/swedishFoods';
+import './Dashboard.css';
 
 
 interface Product {
@@ -12,7 +13,7 @@ interface Product {
     localData?: SwedishFood;
 }
 
-export default function Dashboard({ profile, setProfile, intake, setIntake, history, setHistory }: any) {
+export default function Dashboard({ profile, setProfile, filters, setFilters, intake, setIntake, history, setHistory }: any) {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<Product[]>([]);
@@ -33,20 +34,29 @@ export default function Dashboard({ profile, setProfile, intake, setIntake, hist
     // Denna körs automatiskt varje gång searchQuery ändras
     useEffect(() => {
         if (searchQuery.length >= 3) {
-            const matches: Product[] = SWEDISH_FOODS.filter(f =>
-                f.name.toLowerCase().includes(searchQuery.toLowerCase())
-            ).slice(0, 10).map(f => ({
-                _id: `local-${f.name}`,
-                product_name: f.name,
-                brands: "Svensk Råvara",
-                isLocal: true,
-                localData: f
-            }));
+            const matches: Product[] = SWEDISH_FOODS.filter(f => {
+                const matchesName = f.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+                // KOSTFILTER-LOGIK
+                const matchesVego = !filters.vego || (f as any).isVego;
+                const matchesLaktos = !filters.laktosfritt || (f as any).isLaktosfri;
+                const matchesGluten = !filters.glutenfritt || (f as any).isGlutenfri;
+
+                return matchesName && matchesVego && matchesLaktos && matchesGluten;
+            })
+                .slice(0, 10)
+                .map(f => ({
+                    _id: `local-${f.name}`,
+                    product_name: f.name,
+                    brands: "Svensk Råvara",
+                    isLocal: true,
+                    localData: f
+                }));
             setSearchResults(matches);
         } else {
-            setSearchResults([]); // Rensa om det är färre än 3 bokstäver
+            setSearchResults([]);
         }
-    }, [searchQuery]);
+    }, [searchQuery, filters]); // <--- Viktigt: filters måste vara med här!
 
     // --- LOGIK: LÄGG TILL MAT ---
     const addFoodIntake = (product: Product, amount: number) => {
@@ -112,14 +122,12 @@ export default function Dashboard({ profile, setProfile, intake, setIntake, hist
         if (setHistory) setHistory([]);
     };
 
-    return (
+
+
+   return (
         <div className="app-container">
             <nav className="navbar-simple">
                 <div className="logo">NUTRITION<span>COACH</span></div>
-                <div className="profile-selector">
-                    <button className={profile === 'male' ? 'active' : ''} onClick={() => setProfile('male')}>Man</button>
-                    <button className={profile === 'female' ? 'active' : ''} onClick={() => setProfile('female')}>Kvinna</button>
-                </div>
             </nav>
 
             <main className="dashboard">
@@ -140,7 +148,7 @@ export default function Dashboard({ profile, setProfile, intake, setIntake, hist
                         <section className="stats-grid">
                             {categories[activeTab].map((key: string) => {
                                 const n = currentRDI[key as keyof typeof currentRDI] as Nutrient;
-                                if (!n) return null; // Hoppa över om näringsämnet saknas (t.ex. om 'fat' inte finns i RDI än)
+                                if (!n) return null;
 
                                 const val = Number(intake[key]) || 0;
                                 const pct = (val / n.value) * 100;
@@ -149,7 +157,7 @@ export default function Dashboard({ profile, setProfile, intake, setIntake, hist
                                     <div
                                         key={key}
                                         className="stat-card"
-                                        onClick={() => navigate(`/nutrient/${key}`)} // Klicka på kortet för att lära dig mer
+                                        onClick={() => navigate(`/nutrient/${key}`)}
                                         style={{ cursor: 'pointer' }}
                                     >
                                         <div className="stat-label-row">
@@ -169,17 +177,30 @@ export default function Dashboard({ profile, setProfile, intake, setIntake, hist
 
                     <div className="right-column">
                         <section className="search-area">
+                            {/* FILTER-RAD */}
+                            <div className="filter-row">
+                                <div className="filter-group">
+                                    <button className={`filter-btn ${profile === 'male' ? 'active' : ''}`} onClick={() => setProfile('male')}>Man</button>
+                                    <button className={`filter-btn ${profile === 'female' ? 'active' : ''}`} onClick={() => setProfile('female')}>Kvinna</button>
+                                </div>
+                                <div className="filter-divider"></div>
+                                <div className="filter-group">
+                                    <button className={`filter-btn ${filters.vego ? 'active-vego' : ''}`} onClick={() => setFilters({ ...filters, vego: !filters.vego })}>🌱 Vego</button>
+                                    <button className={`filter-btn ${filters.laktosfritt ? 'active-laktos' : ''}`} onClick={() => setFilters({ ...filters, laktosfritt: !filters.laktosfritt })}>🥛 Laktosfri</button>
+                                    <button className={`filter-btn ${filters.glutenfritt ? 'active-gluten' : ''}`} onClick={() => setFilters({ ...filters, glutenfritt: !filters.glutenfritt })}>🌾 Glutenfri</button>
+                                </div>
+                            </div>
+
                             <div className="search-wrapper">
                                 <input
                                     type="text"
-                                    placeholder="Skriv 3 bokstäver för att söka..."
+                                    placeholder="Sök råvara (t.ex. kyckling, havregryn)..."
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
-                                    autoFocus
                                 />
-                                <button className="search-btn">{loading ? '...' : 'Sök'}</button>
                             </div>
 
+                            {/* SÖKRESULTAT */}
                             {searchResults.length > 0 && (
                                 <div className="results-dropdown">
                                     {searchResults.map(p => (
@@ -189,7 +210,7 @@ export default function Dashboard({ profile, setProfile, intake, setIntake, hist
                                                 <small>{p.brands}</small>
                                             </div>
                                             <div className="amount-controls">
-                                                <input type="number" id={`amt-${p._id}`} defaultValue={p.localData?.defaultAmount || 100} className="amount-input" />
+                                                <input type="number" id={`amt-${p._id}`} defaultValue={100} className="amount-input" />
                                                 <button className="add-icon-btn" onClick={() => {
                                                     const input = document.getElementById(`amt-${p._id}`) as HTMLInputElement;
                                                     addFoodIntake(p, Number(input.value) || 100);
@@ -199,7 +220,7 @@ export default function Dashboard({ profile, setProfile, intake, setIntake, hist
                                     ))}
                                 </div>
                             )}
-                        </section>
+                        </section> {/* Stänger search-area */}
 
                         {/* HISTORIK-LISTA */}
                         <section className="history-box">
@@ -208,7 +229,6 @@ export default function Dashboard({ profile, setProfile, intake, setIntake, hist
                                 {history && history.length > 0 ? (
                                     history.map((item: any) => (
                                         <div key={item.id} className="history-item">
-                                            {/* Vi gör namnet klickbart precis som i sökresultatet */}
                                             <span
                                                 onClick={() => navigate(`/product/${item.name}`)}
                                                 style={{ cursor: 'pointer', textDecoration: 'underline' }}
@@ -237,8 +257,8 @@ export default function Dashboard({ profile, setProfile, intake, setIntake, hist
                             </div>
                         </section>
                     </div>
-                </div >
-            </main >
-        </div >
+                </div>
+            </main>
+        </div>
     );
 }
