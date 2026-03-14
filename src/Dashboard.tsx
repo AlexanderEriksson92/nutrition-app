@@ -19,6 +19,11 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
     const [searchResults, setSearchResults] = useState<Product[]>([]);
     const [loading, setLoading] = useState(false);
     const [activeTab, setActiveTab] = useState<'macros' | 'minerals' | 'vitamins'>('macros');
+    const [hasTrained, setHasTrained] = useState(false);
+    const [weight, setWeight] = useState<number>(75);
+    const [height, setHeight] = useState<number>(180);
+    const [localResults, setLocalResults] = useState<Product[]>([]);
+    const [apiResults, setApiResults] = useState<Product[]>([]);
 
     const currentRDI = RDI_DATA[profile as keyof typeof RDI_DATA].nutrients;
 
@@ -30,56 +35,104 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
         vitamins: ['vitaminA', 'vitaminC', 'vitaminD', 'vitaminE', 'vitaminK', 'b1', 'b2', 'b3', 'b5', 'b6', 'b7', 'b12', 'folate']
     };
 
-    // --- LOGIK: SÖKNING ---
-    // Denna körs automatiskt varje gång searchQuery ändras
+    // --- LOGIK 1: BLIXTSNABB LOKAL SÖKNING ---
     useEffect(() => {
-        if (searchQuery.length >= 3) {
-            const matches: Product[] = SWEDISH_FOODS.filter(f => {
-                const matchesName = f.name.toLowerCase().includes(searchQuery.toLowerCase());
-
-                // KOSTFILTER-LOGIK
-                const matchesVego = !filters.vego || (f as any).isVego;
-                const matchesLaktos = !filters.laktosfritt || (f as any).isLaktosfri;
-                const matchesGluten = !filters.glutenfritt || (f as any).isGlutenfri;
-
-                return matchesName && matchesVego && matchesLaktos && matchesGluten;
-            })
-                .slice(0, 10)
-                .map(f => ({
-                    _id: `local-${f.name}`,
-                    product_name: f.name,
-                    brands: "Svensk Råvara",
-                    isLocal: true,
-                    localData: f
-                }));
-            setSearchResults(matches);
-        } else {
-            setSearchResults([]);
+        if (searchQuery.length < 2) {
+            setLocalResults([]);
+            return;
         }
-    }, [searchQuery, filters]); // <--- Viktigt: filters måste vara med här!
+
+        const matches = SWEDISH_FOODS.filter(f => {
+            const matchesName = f.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesVego = !filters.vego || (f as any).isVego;
+            const matchesLaktos = !filters.laktosfritt || (f as any).isLaktosfri;
+            const matchesGluten = !filters.glutenfritt || (f as any).isGlutenfri;
+            return matchesName && matchesVego && matchesLaktos && matchesGluten;
+        }).map(f => ({
+            _id: `local-${f.name}`,
+            product_name: f.name,
+            brands: "Svensk Råvara",
+            isLocal: true,
+            localData: f
+        })).slice(0, 10);
+
+        setLocalResults(matches);
+    }, [searchQuery, filters]);
+
+    // --- 2. ASYNKRON API-SÖKNING (OPEN FOOD FACTS) ---
+    useEffect(() => {
+        if (searchQuery.length < 3) {
+            setApiResults([]);
+            setLoading(false);
+            return;
+        }
+
+        const timeoutId = setTimeout(async () => {
+            setLoading(true);
+            try {
+                const res = await fetch(
+                    `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${searchQuery}&search_simple=1&action=process&json=1&page_size=6`
+                );
+                const data = await res.json();
+
+                const mapped = (data.products || [])
+                    .filter((p: any) => p.product_name && p.nutriments)
+                    .map((p: any) => ({
+                        _id: p._id,
+                        product_name: p.product_name,
+                        brands: p.brands || "Märke saknas",
+                        isLocal: true,
+                        localData: {
+                            name: p.product_name,
+                            calories: p.nutriments['energy-kcal_100g'] || 0,
+                            protein: p.nutriments.protein_100g || 0,
+                            fat: p.nutriments.fat_100g || 0,
+                            carbs: p.nutriments.carbohydrates_100g || 0,
+                            fiber: p.nutriments.fiber_100g || 0,
+                            iron: (p.nutriments.iron_100g || 0) * 1000,
+                            vitaminC: (p.nutriments['vitamin-c_100g'] || 0) * 1000,
+                        } as any
+                    }));
+                setApiResults(mapped);
+                setLoading(false); // Stänger av laddningen här
+            } catch (e) {
+                console.error("API-fel:", e);
+                setLoading(false); // Stänger av laddningen även vid fel
+            }
+        }, 600);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery]);
+
+    // --- 3. SAMMANSTÄLLNING AV RESULTAT ---
+    const allResults = [...localResults, ...apiResults];
+
 
     // --- LOGIK: LÄGG TILL MAT ---
     const addFoodIntake = (product: Product, amount: number) => {
         if (!product.localData) return;
-        const ratio = amount / 100;
+
         const d = product.localData;
+
+        const totalWeight = d.defaultAmount ? amount * d.defaultAmount : amount;
+        const ratio = totalWeight / 100;
 
         setIntake((prev: any) => {
             const newState = { ...prev };
             Object.keys(d).forEach(key => {
-                if (key in newState && typeof (d as any)[key] === 'number') {
+                if (key in newState && typeof (d as any)[key] === 'number' && key !== 'defaultAmount') {
                     newState[key] += (d as any)[key] * ratio;
                 }
             });
             return newState;
         });
 
-        // Lägg till i historiken (överst i listan)
         if (setHistory) {
             setHistory((prev: any) => [{
                 id: Date.now(),
                 name: product.product_name,
-                amount: amount
+                amount: totalWeight,
+                displayAmount: d.defaultAmount ? `${amount} st` : `${amount}g`
             }, ...prev]);
         }
 
@@ -122,9 +175,7 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
         if (setHistory) setHistory([]);
     };
 
-
-
-   return (
+    return (
         <div className="app-container">
             <nav className="navbar-simple">
                 <div className="logo">NUTRITION<span>COACH</span></div>
@@ -138,7 +189,6 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
 
                 <div className="main-layout">
                     <div className="left-column">
-                        {/* FLIK-MENY */}
                         <div className="tab-menu">
                             <button className={activeTab === 'macros' ? 'active' : ''} onClick={() => setActiveTab('macros')}>Macros</button>
                             <button className={activeTab === 'minerals' ? 'active' : ''} onClick={() => setActiveTab('minerals')}>Mineraler</button>
@@ -147,27 +197,36 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
 
                         <section className="stats-grid">
                             {categories[activeTab].map((key: string) => {
-                                const n = currentRDI[key as keyof typeof currentRDI] as Nutrient;
-                                if (!n) return null;
+                                const selectedProfileData = RDI_DATA[profile as keyof typeof RDI_DATA];
+                                const nutrientData = (selectedProfileData.nutrients as any)[key] as Nutrient;
+                                if (!nutrientData) return null;
+
+                                let targetValue = nutrientData.value;
+                                if (key === 'protein') {
+                                    targetValue = hasTrained ? weight * 2 : weight * 0.8;
+                                }
 
                                 const val = Number(intake[key]) || 0;
-                                const pct = (val / n.value) * 100;
+                                const pct = (val / targetValue) * 100;
 
                                 return (
-                                    <div
-                                        key={key}
-                                        className="stat-card"
-                                        onClick={() => navigate(`/nutrient/${key}`)}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        <div className="stat-label-row">
-                                            <span className="nutrient-name">{n.name} ⓘ</span>
-                                            <span className="nutrient-value">{val.toFixed(1)} <small>({pct.toFixed(0)}%)</small></span>
-                                            <div className="progress-bar" style={{
-                                                width: `${Math.min(pct, 100)}%`,
-                                                backgroundColor: pct >= 100 ? '#00ff88' : '#00d2ff',
-                                                boxShadow: pct >= 100 ? '0 0 8px #00ff88' : 'none'
-                                            }}></div>
+                                    <div key={key} className="stat-card" onClick={() => navigate(`/nutrient/${key}`)}>
+                                        <div className="nutrient-header">
+                                            <span className="nutrient-name">{nutrientData.name}</span>
+                                        </div>
+                                        <div className="nutrient-value-row">
+                                            <span className="current-val">{val.toFixed(1)}</span>
+                                            <span className="target-val">/ {targetValue.toFixed(0)}{nutrientData.unit}</span>
+                                        </div>
+                                        <div className="progress-container">
+                                            <div
+                                                className="progress-bar"
+                                                style={{
+                                                    width: `${Math.min(pct, 100)}%`,
+                                                    backgroundColor: pct >= 100 ? '#00ff88' : '#00d2ff'
+                                                }}
+                                            ></div>
+                                            <span className="progress-text">{pct.toFixed(0)}%</span>
                                         </div>
                                     </div>
                                 );
@@ -176,51 +235,53 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
                     </div>
 
                     <div className="right-column">
+                        {/* SÖK-SEKTION */}
                         <section className="search-area">
-                            {/* FILTER-RAD */}
-                            <div className="filter-row">
-                                <div className="filter-group">
-                                    <button className={`filter-btn ${profile === 'male' ? 'active' : ''}`} onClick={() => setProfile('male')}>Man</button>
-                                    <button className={`filter-btn ${profile === 'female' ? 'active' : ''}`} onClick={() => setProfile('female')}>Kvinna</button>
-                                </div>
-                                <div className="filter-divider"></div>
-                                <div className="filter-group">
-                                    <button className={`filter-btn ${filters.vego ? 'active-vego' : ''}`} onClick={() => setFilters({ ...filters, vego: !filters.vego })}>🌱 Vego</button>
-                                    <button className={`filter-btn ${filters.laktosfritt ? 'active-laktos' : ''}`} onClick={() => setFilters({ ...filters, laktosfritt: !filters.laktosfritt })}>🥛 Laktosfri</button>
-                                    <button className={`filter-btn ${filters.glutenfritt ? 'active-gluten' : ''}`} onClick={() => setFilters({ ...filters, glutenfritt: !filters.glutenfritt })}>🌾 Glutenfri</button>
-                                </div>
-                            </div>
-
-                            <div className="search-wrapper">
+                            <div className="search-wrapper" style={{ position: 'relative' }}>
                                 <input
                                     type="text"
                                     placeholder="Sök råvara (t.ex. kyckling, havregryn)..."
                                     value={searchQuery}
                                     onChange={e => setSearchQuery(e.target.value)}
                                 />
+                                {loading && (
+                                    <div className="search-status" style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '0.7rem', color: '#00d2ff', fontWeight: 'bold' }}>
+                                        Hämtar...
+                                    </div>
+                                )}
                             </div>
 
-                            {/* SÖKRESULTAT */}
-                            {searchResults.length > 0 && (
-                                <div className="results-dropdown">
-                                    {searchResults.map(p => (
+                            <div className="results-list">
+                                {allResults.map(p => {
+                                    // Kontrollera om varan faktiskt har ett styck-värde definierat (t.ex. ägg)
+                                    const isPiece = p.localData && p.localData.defaultAmount && p.localData.defaultAmount > 0;
+
+                                    return (
                                         <div key={p._id} className="result-item">
                                             <div className="res-text" onClick={() => navigate(`/product/${p.product_name}`)} style={{ cursor: 'pointer' }}>
                                                 <p className="product-name">{p.product_name} ℹ️</p>
                                                 <small>{p.brands}</small>
                                             </div>
                                             <div className="amount-controls">
-                                                <input type="number" id={`amt-${p._id}`} defaultValue={100} className="amount-input" />
+                                                <input
+                                                    type="number"
+                                                    id={`amt-${p._id}`}
+                                                    defaultValue={isPiece ? 1 : 100}
+                                                    className="amount-input"
+                                                />
+                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
+                                                    {isPiece ? 'st' : 'g'}
+                                                </span>
                                                 <button className="add-icon-btn" onClick={() => {
                                                     const input = document.getElementById(`amt-${p._id}`) as HTMLInputElement;
-                                                    addFoodIntake(p, Number(input.value) || 100);
+                                                    addFoodIntake(p, Number(input.value) || 1);
                                                 }}>+</button>
                                             </div>
                                         </div>
-                                    ))}
-                                </div>
-                            )}
-                        </section> {/* Stänger search-area */}
+                                    );
+                                })}
+                            </div>
+                        </section>
 
                         {/* HISTORIK-LISTA */}
                         <section className="history-box">
@@ -235,7 +296,7 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
                                             >
                                                 {item.name}
                                             </span>
-                                            <strong>{item.amount}g</strong>
+                                            <strong>{item.displayAmount || `${item.amount}g`}</strong>
                                         </div>
                                     ))
                                 ) : (
@@ -245,6 +306,7 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
                             <button className="reset-btn" onClick={resetAll}>Nollställ allt</button>
                         </section>
 
+                        {/* COACH REKOMMENDERAR */}
                         <section className="coach-box">
                             <h2>Coach rekommenderar</h2>
                             <div className="tips-list">
