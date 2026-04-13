@@ -1,3 +1,36 @@
+export interface SwedishFood {
+  name: string;
+  calories: number;
+  protein: number;
+  fat: number;
+  carbs: number;
+  fiber: number;
+  omega3: number;
+  vitaminA: number;
+  vitaminC: number;
+  vitaminD: number;
+  vitaminE: number;
+  vitaminK: number;
+  b1: number;
+  b2: number;
+  b3: number;
+  b5: number;
+  b6: number;
+  b7: number;
+  b12: number;
+  folate: number;
+  iron: number;
+  calcium: number;
+  iodine: number;
+  magnesium: number;
+  zinc: number;
+  potassium: number;
+  selenium: number;
+  copper: number;
+  manganese: number;
+  defaultAmount?: number;
+}
+
 export interface Nutrient {
   name: string;
   value: number;
@@ -11,6 +44,7 @@ export const RDI_DATA = {
       calories: { name: "Kalorier", value: 2500, unit: "kcal" },
       protein: { name: "Protein", value: 75, unit: "g" },
       fiber: { name: "Fibrer", value: 35, unit: "g" },
+      fat: { name: "Fett", value: 80, unit: "g" },
       omega3: { name: "Omega-3", value: 2.5, unit: "g" },
       // Vitaminer
       vitaminA: { name: "Vitamin A", value: 900, unit: "µg" },

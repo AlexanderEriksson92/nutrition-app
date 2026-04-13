@@ -36,7 +36,8 @@ body {
 /* --- LAYOUT ENGINE (Fixat för Desktop & Mobil) --- */
 .main-layout {
   display: grid;
-  grid-template-columns: 1fr 380px; /* Desktop standard */
+  grid-template-columns: 1fr 380px;
+  /* Desktop standard */
   gap: 25px;
   width: 100%;
   align-items: start;
@@ -45,7 +46,8 @@ body {
 /* Responsiv layout-ändring */
 @media (max-width: 1000px) {
   .main-layout {
-    grid-template-columns: 1fr; /* Stapla kolumner på mobil/padda */
+    grid-template-columns: 1fr;
+    /* Stapla kolumner på mobil/padda */
   }
 }
 
@@ -68,13 +70,15 @@ body {
   display: flex;
   gap: 8px;
   margin-bottom: 20px;
-  width: 400px; /* Sätt en fast bredd som matchar innehållet */
-  overflow-x: auto; /* Gör den scrollbar istället för att den växer */
-  white-space: nowrap; 
+  width: 400px;
+  /* Sätt en fast bredd som matchar innehållet */
+  overflow-x: auto;
+  /* Gör den scrollbar istället för att den växer */
+  white-space: nowrap;
   padding: 5px 2px;
   -webkit-overflow-scrolling: touch;
   /* Förhindrar att menyn påverkar layoutens totala bredd */
-  flex-shrink: 0; 
+  flex-shrink: 0;
 }
 
 .tab-menu::-webkit-scrollbar {
@@ -91,8 +95,10 @@ body {
   font-weight: 600;
   white-space: nowrap;
   font-size: 0.85rem;
-  flex-shrink: 0; /* Förhindrar att knappar trycks ihop */
-  min-width: 100px; /* Ger knapparna en stabil basbredd */
+  flex-shrink: 0;
+  /* Förhindrar att knappar trycks ihop */
+  min-width: 100px;
+  /* Ger knapparna en stabil basbredd */
   transition: all 0.2s ease;
 }
 
@@ -105,24 +111,28 @@ body {
 /* --- STATS GRID --- */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 kolumner standard */
+  grid-template-columns: repeat(2, 1fr);
+  /* 2 kolumner standard */
   gap: 15px;
   width: 400px;
 }
 
 .nutrient-name {
   font-size: 0.75rem;
-     color: var(--accent);
+  color: var(--accent);
   margin: 0;
 }
 
 @media (max-width: 768px) {
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr); /* 3 kolumner på större skärmar */
+    grid-template-columns: repeat(2, 1fr);
+    /* 3 kolumner på större skärmar */
     width: 100%;
   }
+
   .tab-menu {
-    width: 100%; /* Gör tab-menyn fullbredd på mindre skärmar */
+    width: 100%;
+    /* Gör tab-menyn fullbredd på mindre skärmar */
   }
 }
 
@@ -137,10 +147,11 @@ body {
   min-width: 0;
   transition: transform 0.2s ease, border-color 0.2s;
   cursor: pointer;
-  min-height: 110px; /* Förhindrar höjdhopp */
+  min-height: 110px;
+  /* Förhindrar höjdhopp */
 }
 
-/* --- SÖK & FILTER (All din gamla logik återställd) --- */
+/* --- SÖK & FILTER --- */
 .search-area {
   position: relative;
   background: var(--card);
@@ -180,10 +191,29 @@ body {
   text-align: center;
 }
 
-.filter-btn.active { background: var(--blue); color: #000; border-color: var(--blue); }
-.filter-btn.active-vego { background: #2ecc71; color: #000; border: none; }
-.filter-btn.active-laktos { background: #f1c40f; color: #000; border: none; }
-.filter-btn.active-gluten { background: #e67e22; color: #000; border: none; }
+.filter-btn.active {
+  background: var(--blue);
+  color: #000;
+  border-color: var(--blue);
+}
+
+.filter-btn.active-vego {
+  background: #2ecc71;
+  color: #000;
+  border: none;
+}
+
+.filter-btn.active-laktos {
+  background: #f1c40f;
+  color: #000;
+  border: none;
+}
+
+.filter-btn.active-gluten {
+  background: #e67e22;
+  color: #000;
+  border: none;
+}
 
 .search-wrapper {
   background: rgba(255, 255, 255, 0.03);
@@ -211,6 +241,22 @@ body {
   border-bottom: 1px solid var(--border);
   gap: 10px;
   flex-wrap: wrap;
+}
+
+.amount-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.unit-selector {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: white;
+    padding: 4px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
 }
 
 .product-name {
@@ -252,7 +298,8 @@ body {
 }
 
 /* --- HISTORIK & COACH --- */
-.history-box, .coach-box {
+.history-box,
+.coach-box {
   width: 100%;
   background: var(--card);
   padding: 20px;
@@ -266,6 +313,36 @@ body {
   gap: 10px;
   max-height: 250px;
   overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.remove-single-btn {
+    background: transparent;
+    border: none;
+    color: #ff4d4d;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background 0.2s;
+    line-height: 1;
+}
+
+.remove-single-btn:hover {
+    background: rgba(255, 77, 77, 0.1);
 }
 
 .reset-btn {
@@ -296,4 +373,50 @@ body {
   color: white;
   border-radius: 8px;
   padding: 6px;
+}
+
+/* --- Ålder & Vikt --- */
+.header-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-switcher {
+  display: flex;
+  gap: 20px;
+}
+
+.user-profile-settings {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.user-specs {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.user-specs label {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+.user-specs input {
+  width: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 4px;
+  padding: 4px;
+  margin-left: 5px;
 }

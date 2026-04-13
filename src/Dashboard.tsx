@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RDI_DATA, type Nutrient } from './data/rdi';
 import { SWEDISH_FOODS, type SwedishFood } from './data/swedishFoods';
+import { mealStore } from './utils/mealStore';
 import './Dashboard.css';
 
 
@@ -21,11 +22,14 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
     const [activeTab, setActiveTab] = useState<'macros' | 'minerals' | 'vitamins'>('macros');
     const [hasTrained, setHasTrained] = useState(false);
     const [weight, setWeight] = useState<number>(75);
+    const [age, setAge] = useState<number>(30);
     const [height, setHeight] = useState<number>(180);
     const [localResults, setLocalResults] = useState<Product[]>([]);
     const [apiResults, setApiResults] = useState<Product[]>([]);
+    const [savedMeals, setSavedMeals] = useState(mealStore.getAll());
+    const [mealName, setMealName] = useState('');
 
-    const currentRDI = RDI_DATA[profile as keyof typeof RDI_DATA].nutrients;
+    const currentRDI = (RDI_DATA[profile as keyof typeof RDI_DATA] || RDI_DATA.male).nutrients;
 
     // --- KATEGORISERING ---
     const categories: any = {
@@ -71,7 +75,12 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
             setLoading(true);
             try {
                 const res = await fetch(
-                    `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${searchQuery}&search_simple=1&action=process&json=1&page_size=6`
+                    `https://world.openfoodfacts.org/api/v2/search?categories_tags=${searchQuery}&fields=product_name,brands,nutriments,_id&page_size=6`,
+                    {
+                        headers: {
+                            'User-Agent': 'NutritionCoachApp - Web - Version 1.0' // Krävs av OFF
+                        }
+                    }
                 );
                 const data = await res.json();
 
@@ -105,17 +114,19 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
     }, [searchQuery]);
 
     // --- 3. SAMMANSTÄLLNING AV RESULTAT ---
-    const allResults = [...localResults, ...apiResults];
+    const allResults = [
+        ...savedMeals.filter(m => m.product_name.toLowerCase().includes(searchQuery.toLowerCase())),
+        ...localResults,
+        ...apiResults
+    ];
 
 
     // --- LOGIK: LÄGG TILL MAT ---
-    const addFoodIntake = (product: Product, amount: number) => {
+    const addFoodIntake = (product: Product, grams: number, displayStr: string) => {
         if (!product.localData) return;
 
         const d = product.localData;
-
-        const totalWeight = d.defaultAmount ? amount * d.defaultAmount : amount;
-        const ratio = totalWeight / 100;
+        const ratio = grams / 100; // All data i filen är per 100g
 
         setIntake((prev: any) => {
             const newState = { ...prev };
@@ -131,12 +142,11 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
             setHistory((prev: any) => [{
                 id: Date.now(),
                 name: product.product_name,
-                amount: totalWeight,
-                displayAmount: d.defaultAmount ? `${amount} st` : `${amount}g`
+                amount: grams,
+                displayAmount: displayStr // Här sparas t.ex. "150g" eller "2 st"
             }, ...prev]);
         }
 
-        setSearchResults([]);
         setSearchQuery('');
     };
 
@@ -167,12 +177,49 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
         });
         return missing;
     };
-
+    // --- LOGIK: ÅTERSTÄLL ALLT ---
     const resetAll = () => {
         const empty: any = {};
         Object.keys(currentRDI).forEach(key => { empty[key] = 0; });
         setIntake(empty);
         if (setHistory) setHistory([]);
+    };
+
+    const removeItem = (itemToRemove: any) => {
+        // 1. Räkna ut hur mycket näring som ska dras av
+        const ratio = itemToRemove.amount / 100;
+        const foodData = SWEDISH_FOODS.find(f => f.name === itemToRemove.name) ||
+            allResults.find(r => r.product_name === itemToRemove.name)?.localData;
+
+        if (foodData) {
+            setIntake((prev: any) => {
+                const newState = { ...prev };
+                Object.keys(foodData).forEach(key => {
+                    if (key in newState && typeof (foodData as any)[key] === 'number') {
+                        // Dra av näringen (minus istället för plus)
+                        newState[key] -= (foodData as any)[key] * ratio;
+                    }
+                });
+                return newState;
+            });
+        }
+
+        // 2. Ta bort objektet från historik-listan
+        setHistory((prev: any) => prev.filter((item: any) => item.id !== itemToRemove.id));
+    };
+
+    // --- LOGIK: SPARA MÅLTID ---
+    const handleSaveAsMeal = () => {
+        if (!mealName.trim() || history.length === 0) {
+            alert("Ge rätten ett namn och se till att du har mat i listan!");
+            return;
+        }
+
+        // Vi sparar det nuvarande 'intake'-objektet (summan av allt i historiken)
+        const updated = mealStore.save(mealName, intake);
+        setSavedMeals(updated);
+        setMealName('');
+        alert(`"${mealName}" är sparad!`);
     };
 
     return (
@@ -184,8 +231,44 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
             <main className="dashboard">
                 <header className="dash-header">
                     <h1>Dagens Intag</h1>
-                    <p>Mål för: {RDI_DATA[profile as keyof typeof RDI_DATA].label}</p>
+                    <div className="header-controls">
+                        {/* Profilväljare, Ålder och Vikt i en rad */}
+                        <div className="user-profile-settings">
+                            <div className="profile-switcher">
+                                <button
+                                    className={profile === 'male' ? 'active' : ''}
+                                    onClick={() => setProfile('male')}
+                                >Man</button>
+                                <button
+                                    className={profile === 'female' ? 'active' : ''}
+                                    onClick={() => setProfile('female')}
+                                >Kvinna</button>
+                            </div>
+
+                            <div className="user-specs">
+                                <label>
+                                    Ålder
+                                    <input type="number" value={age} onChange={(e) => setAge(Number(e.target.value))} />
+                                </label>
+                                <label>
+                                    Vikt (kg)
+                                    <input type="number" value={weight} onChange={(e) => setWeight(Number(e.target.value))} />
+                                </label>
+                            </div>
+                            <label className="training-toggle">
+                                <input
+                                    type="checkbox"
+                                    checked={hasTrained}
+                                    onChange={() => setHasTrained(!hasTrained)}
+                                />
+                                <span>Tränat idag? (Dubbelt proteinmål)</span>
+                            </label>
+                        </div>
+
+
+                    </div>
                 </header>
+
 
                 <div className="main-layout">
                     <div className="left-column">
@@ -197,8 +280,10 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
 
                         <section className="stats-grid">
                             {categories[activeTab].map((key: string) => {
-                                const selectedProfileData = RDI_DATA[profile as keyof typeof RDI_DATA];
-                                const nutrientData = (selectedProfileData.nutrients as any)[key] as Nutrient;
+                                // Använd currentRDI som vi redan definierat säkert på rad 28
+                                const nutrientData = (currentRDI as any)[key] as Nutrient;
+
+                                // Om näringsvärdet saknas, hoppa över just detta kort istället för att krascha hela listan
                                 if (!nutrientData) return null;
 
                                 let targetValue = nutrientData.value;
@@ -206,18 +291,28 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
                                     targetValue = hasTrained ? weight * 2 : weight * 0.8;
                                 }
 
-                                const val = Number(intake[key]) || 0;
-                                const pct = (val / targetValue) * 100;
+                                if (key === 'calories') {
+                                    const baseCalories = profile === 'male' ? 2500 : 2000;
+                                    const weightAdjustment = (weight - 75) * 10; // +10 kcal per kg över 75
+                                    const ageAdjustment = (age - 30) * 5;      // -5 kcal per år över 30
+                                    targetValue = baseCalories + weightAdjustment - ageAdjustment;
+                                }
 
+                                const val = Number(intake[key]) || 0;
+                                const pct = targetValue > 0 ? (val / targetValue) * 100 : 0;
                                 return (
                                     <div key={key} className="stat-card" onClick={() => navigate(`/nutrient/${key}`)}>
                                         <div className="nutrient-header">
                                             <span className="nutrient-name">{nutrientData.name}</span>
                                         </div>
+
                                         <div className="nutrient-value-row">
                                             <span className="current-val">{val.toFixed(1)}</span>
-                                            <span className="target-val">/ {targetValue.toFixed(0)}{nutrientData.unit}</span>
+                                            <span className="target-val">
+                                                / {targetValue.toFixed(0)}{nutrientData.unit}
+                                            </span>
                                         </div>
+
                                         <div className="progress-container">
                                             <div
                                                 className="progress-bar"
@@ -253,28 +348,44 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
 
                             <div className="results-list">
                                 {allResults.map(p => {
-                                    // Kontrollera om varan faktiskt har ett styck-värde definierat (t.ex. ägg)
-                                    const isPiece = p.localData && p.localData.defaultAmount && p.localData.defaultAmount > 0;
+                                    // Vi kollar om varan HAR ett styck-pris (defaultAmount)
+                                    const hasPieceOption = p.localData && p.localData.defaultAmount && p.localData.defaultAmount > 0;
+
+                                    // Vi använder ett lokalt state eller bara kollar input-fältets id för att avgöra enhet
+                                    // För att hålla det enkelt: Om användaren skriver in ett lågt tal (< 10) på en vara med styck-pris, 
+                                    // så räknar vi det som styck, annars som gram. 
+                                    // ELLER så låter vi användaren skriva vad de vill och vi visar båda enheterna:
 
                                     return (
                                         <div key={p._id} className="result-item">
-                                            <div className="res-text" onClick={() => navigate(`/product/${p.product_name}`)} style={{ cursor: 'pointer' }}>
+                                            <div className="res-text" onClick={() => navigate(`/product/${p.product_name}`)}>
                                                 <p className="product-name">{p.product_name} ℹ️</p>
-                                                <small>{p.brands}</small>
+                                                <small>{p.brands} {hasPieceOption && `(1st ≈ ${p.localData?.defaultAmount}g)`}</small>
                                             </div>
+
                                             <div className="amount-controls">
                                                 <input
                                                     type="number"
                                                     id={`amt-${p._id}`}
-                                                    defaultValue={isPiece ? 1 : 100}
+                                                    defaultValue={hasPieceOption ? 1 : 100}
                                                     className="amount-input"
                                                 />
-                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-                                                    {isPiece ? 'st' : 'g'}
-                                                </span>
+
+                                                <select id={`unit-${p._id}`} className="unit-selector">
+                                                    <option value="g">g</option>
+                                                    {hasPieceOption && <option value="st">st</option>}
+                                                </select>
+
                                                 <button className="add-icon-btn" onClick={() => {
-                                                    const input = document.getElementById(`amt-${p._id}`) as HTMLInputElement;
-                                                    addFoodIntake(p, Number(input.value) || 1);
+                                                    const amountInput = document.getElementById(`amt-${p._id}`) as HTMLInputElement;
+                                                    const unitSelect = document.getElementById(`unit-${p._id}`) as HTMLSelectElement;
+                                                    const val = Number(amountInput.value) || 0;
+                                                    const unit = unitSelect.value;
+
+                                                    // Om enheten är 'st', multiplicera med defaultAmount, annars använd värdet som gram
+                                                    const finalGrams = unit === 'st' ? val * (p.localData?.defaultAmount || 1) : val;
+
+                                                    addFoodIntake(p, finalGrams, unit === 'st' ? `${val} st` : `${val}g`);
                                                 }}>+</button>
                                             </div>
                                         </div>
@@ -290,18 +401,44 @@ export default function Dashboard({ profile, setProfile, filters, setFilters, in
                                 {history && history.length > 0 ? (
                                     history.map((item: any) => (
                                         <div key={item.id} className="history-item">
-                                            <span
-                                                onClick={() => navigate(`/product/${item.name}`)}
-                                                style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                                            <div className="history-item-info">
+                                                <span
+                                                    onClick={() => navigate(`/product/${item.name}`)}
+                                                    style={{ cursor: 'pointer', textDecoration: 'underline' }}
+                                                >
+                                                    {item.name}
+                                                </span>
+                                                <strong>{item.displayAmount || `${item.amount}g`}</strong>
+                                            </div>
+                                            <button
+                                                className="remove-single-btn"
+                                                onClick={() => removeItem(item)}
+                                                title="Ta bort"
                                             >
-                                                {item.name}
-                                            </span>
-                                            <strong>{item.displayAmount || `${item.amount}g`}</strong>
+                                                ✕
+                                            </button>
                                         </div>
                                     ))
                                 ) : (
                                     <p className="empty-msg">Ingen mat loggad än.</p>
                                 )}
+                            </div>
+                            <div className="save-meal-tool" style={{ marginTop: '15px', padding: '10px', borderTop: '1px solid #333' }}>
+                                <input
+                                    type="text"
+                                    placeholder="Namnge denna måltid..."
+                                    value={mealName}
+                                    onChange={(e) => setMealName(e.target.value)}
+                                    className="meal-name-input"
+                                    style={{ width: '100%', marginBottom: '8px', padding: '5px', background: '#111', color: '#fff', border: '1px solid #444' }}
+                                />
+                                <button
+                                    onClick={handleSaveAsMeal}
+                                    className="save-meal-btn"
+                                    style={{ width: '100%', background: '#00d2ff', color: '#000', border: 'none', padding: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+                                >
+                                    💾 Spara listan som en rätt
+                                </button>
                             </div>
                             <button className="reset-btn" onClick={resetAll}>Nollställ allt</button>
                         </section>

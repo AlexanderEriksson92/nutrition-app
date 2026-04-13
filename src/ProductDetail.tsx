@@ -72,7 +72,7 @@ export default function ProductDetail() {
                 <div className="hero-overlay"></div>
 
                 <nav className="product-nav-overlay">
-                    <button className="back-circle" onClick={() => navigate('/')}>←</button>
+                    <button className="back-btn" onClick={() => navigate('/')}>← Tillbaka</button>
                 </nav>
 
                 <div className="hero-content">
